@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:responsivedashboard/constants.dart';
+import 'package:responsivedashboard/responsive/desktop_body.dart';
 import '../util/my_tile.dart';
 import 'package:responsivedashboard/util/about_me_box.dart';
 
@@ -51,18 +52,9 @@ class _TabletScaffoldState extends State<TabletScaffold> {
                             fontSize: 24,
                             letterSpacing: 2,
                             fontWeight: FontWeight.bold)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: ListView.builder(
-                        // physics: const NeverScrollableScrollPhysics(),
-                        // ! important physics sadece siteye hızlı bakmak için koydum işin bitince kaldır
-                        itemCount: 9,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return const MyTile(); // TODO: add github link in tile
-                        },
-                      ),
-                    ),
+                    const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: ListViewGithub()),
                     // work experience and education
                     Padding(
                       padding: const EdgeInsets.all(8.0),

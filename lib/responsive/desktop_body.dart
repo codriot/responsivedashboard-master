@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:responsivedashboard/Product/services/web_scraper_service.dart';
 import 'package:responsivedashboard/util/about_me_box.dart';
+import 'package:responsivedashboard/util/my_tile.dart';
 import '../constants.dart';
-import '../util/my_tile.dart';
 
 class DesktopScaffold extends StatefulWidget {
   const DesktopScaffold({Key? key}) : super(key: key);
@@ -54,17 +55,9 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
                             fontSize: 24,
                             letterSpacing: 2,
                             fontWeight: FontWeight.bold)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: ListView.builder(
-                        // physics: const NeverScrollableScrollPhysics(),
-                        // ! important physics sadece siteye hızlı bakmak için koydum işin bitince kaldır
-                        itemCount: 9,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return const MyTile(); // TODO: add github link in tile
-                        },
-                      ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: SizedBox(height: 800, child: ListViewGithub()),
                     ),
                     // work experience and education
                     Padding(
@@ -163,6 +156,37 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class ListViewGithub extends StatelessWidget {
+  const ListViewGithub({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List>(
+      future: WebScraperService().fetchRepos(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          return ListView.builder(
+            itemCount: snapshot.data?.length ?? 0,
+            itemBuilder: (context, index) {
+              return MyTile(
+                maintitle: snapshot.data![index].name ?? '',
+                subtitle: snapshot.data![index].description ?? '',
+                url: snapshot.data![index].htmlUrl ?? '',
+              );
+            },
+          );
+        }
+      },
     );
   }
 }
